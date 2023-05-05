@@ -45,50 +45,19 @@ const applyGeoprocessor = async ({ url, params, output }) => {
   }
 }
 
-// const valorAmenaza =
-//   'https://srvags.sgc.gov.co/arcgis/rest/services/Amenaza_Sismica/Amenaza_Sismica_Nacional/MapServer/8'
-// const cuerposAgua =
-//   'https://srvags.sgc.gov.co/arcgis/rest/services/Amenaza_Sismica/Amenaza_Sismica_Nacional/MapServer/5'
-
-// applyGeoprocessor({
-//   url: 'https://srvagspru.sgc.gov.co/arcgis/rest/services/Geoprocesos/union2/GPServer/union',
-//   params: {
-//     in_features1: prepareUrl(valorAmenaza),
-//     in_features2: prepareUrl(cuerposAgua),
-//     nombre: 'newLabUnion',
-//   },
-//   output: 'out_feature',
-// }).then((result) => {
-//   console.log(result)
-// })
-
-const valorAmenaza = prepareUrl(
-  'https://srvags.sgc.gov.co/arcgis/rest/services/Amenaza_Sismica/Amenaza_Sismica_Nacional/MapServer/8'
-)
-const cuerposAgua = prepareUrl(
+const valorAmenaza =
+  'https://srvags.sgc.gov.co/arcgis/rest/services/Amenaza_Sismica/Amenaza_Sismica_Nacional/MapServer/9'
+const cuerposAgua =
   'https://srvags.sgc.gov.co/arcgis/rest/services/Amenaza_Sismica/Amenaza_Sismica_Nacional/MapServer/5'
-)
 
-const url = 'https://srvagspru.sgc.gov.co'
-const api = `${url}/arcgis/rest/services/Geoprocesos/union2/GPServer/union`
-const sJob = `${api}/submitJob`
-const getJobs = `${api}/jobs`
-const queryUrl = `${sJob}?in_features1=${valorAmenaza}&in_features2=${cuerposAgua}&nombre='algo'&f=json`
-
-fetch(queryUrl)
-  .then((response) => response.json())
-  .then((jobInfo) => {
-    if (jobInfo.jobStatus === 'esriJobSubmitted') {
-      const status = ['esriJobFailed']
-      const interval = setInterval(() => {
-        fetch(`${getJobs}/${jobInfo.jobId}?f=json`)
-          .then((response) => response.json())
-          .then((waitForJobCompletion) => {
-            console.log(waitForJobCompletion)
-            if (status.includes(waitForJobCompletion.jobStatus)) {
-              clearInterval(interval)
-            }
-          })
-      }, 5000)
-    }
-  })
+applyGeoprocessor({
+  url: 'https://srvagspru.sgc.gov.co/arcgis/rest/services/Geoprocesos/GPunion/GPServer/union',
+  params: {
+    capa1: prepareUrl(valorAmenaza),
+    capa2: prepareUrl(cuerposAgua),
+    nombre: 'newLabUnion',
+  },
+  output: 'out_feature',
+}).then((result) => {
+  console.log(result)
+})
